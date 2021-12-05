@@ -3,10 +3,7 @@ module.exports = (app) => {
     const username = req.params.username,
       endUrl = req.params.endUrl;
 
-    const base64String = await app.redisClient.get(username).catch((e) => {
-      console.error(e);
-      return null;
-    });
+    const base64String = await app.redisClient.get(username).catch(() => null);
     if (!base64String) return res.status(500).json({ error: true, msg: "Could not find base64 string..." });
 
     const key = `${base64String}_${username}/${endUrl}`;

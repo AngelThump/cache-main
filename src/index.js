@@ -43,18 +43,17 @@ app.listen(config.port, async () => {
   });
 
   for (let stream of streams) {
-    app.redisClient.set(stream.username, Buffer.from(stream.createdAt + stream.username).toString("base64"));
+    app.redisClient.set(stream.user.username, Buffer.from(stream.createdAt + stream.user.username).toString("base64"));
   }
 
   streamService.on("created", (stream) => {
-    app.redisClient.set(stream.username, Buffer.from(stream.createdAt + stream.username).toString("base64"));
+    app.redisClient.set(stream.user.username, Buffer.from(stream.createdAt + stream.user.username).toString("base64"));
   });
 
   streamService.on("removed", (stream) => {
-    app.redisClient.del(stream.username);
+    app.redisClient.del(stream.user.username);
   });
 });
 const cache = require("./cache");
-const auth = require("./auth");
 
-app.post("/hls/:username/:endUrl", auth(app), cache(app));
+app.post("/hls/:username/:endUrl", cache(app));
