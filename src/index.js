@@ -20,7 +20,7 @@ app.listen(config.port, async () => {
       : {
           host: config.redis.hostname,
         },
-    password: config.redis.password,
+    //password: config.redis.password,
   });
 
   await app.redisClient
@@ -46,14 +46,25 @@ app.listen(config.port, async () => {
     app.redisClient.set(stream.user.username, Buffer.from(stream.createdAt + stream.user.username).toString("base64"));
   }
 
-  streamService.on("created", (stream) => {
-    app.redisClient.set(stream.user.username, Buffer.from(stream.createdAt + stream.user.username).toString("base64"));
+  streamService.on("created", async (stream) => {
+    const user = await app.client
+      .service("users")
+      .get(stream.userId)
+      .catch(() => null);
+    if (!user) return;
+    app.redisClient.set(user.username, Buffer.from(stream.createdAt + user.username).toString("base64"));
   });
 
-  streamService.on("removed", (stream) => {
-    app.redisClient.del(stream.user.username);
+  streamService.on("removed", async (stream) => {
+    const user = await app.client
+      .service("users")
+      .get(stream.userId)
+      .catch(() => null);
+    if (!user) return;
+    app.redisClient.del(user.username);
   });
 });
+
 const cache = require("./cache");
 
 app.post("/hls/:username/:endUrl", cache(app));
