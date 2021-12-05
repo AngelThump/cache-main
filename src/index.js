@@ -20,7 +20,7 @@ app.listen(config.port, async () => {
       : {
           host: config.redis.hostname,
         },
-    //password: config.redis.password,
+    password: config.redis.password,
   });
 
   await app.redisClient
