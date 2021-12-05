@@ -4,6 +4,7 @@ const express = require("express");
 const client = require("./client");
 const app = express();
 app.disable("x-powered-by");
+const auth = require("./auth");
 
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -67,4 +68,4 @@ app.listen(config.port, async () => {
 
 const cache = require("./cache");
 
-app.post("/hls/:username/:endUrl", cache(app));
+app.post("/hls/:username/:endUrl", auth(app), cache(app));
