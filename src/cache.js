@@ -10,12 +10,16 @@ module.exports = (app) => {
 
     const chunks = [];
     req.on("data", function (chunk) {
+      /* Maybe use this when LL-HLS is needed
       if (endUrl.endsWith(".ts")) app.redisClient.append(key, chunk);
-      else chunks.push(chunk);
+      else chunks.push(chunk);*/
+      chunks.push(chunk);
     });
     req.on("end", function () {
-      if (endUrl.endsWith(".ts")) app.redisClient.expire(key, 20);
-      else app.redisClient.set(key, Buffer.concat(chunks), { EX: 20 });
+      /*if (endUrl.endsWith(".ts")) app.redisClient.expire(key, 20);
+        else app.redisClient.set(key, Buffer.concat(chunks), { EX: 20 });
+      */
+      app.redisClient.set(key, Buffer.concat(chunks), { EX: 20 });
       res.status(200).end("ok");
     });
   };
