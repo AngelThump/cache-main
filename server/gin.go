@@ -31,7 +31,7 @@ func Initalize() {
 		if strings.HasSuffix(endUrl, ".ts") {
 			client.Rdb.Set(client.Ctx, key, data, 20*time.Second)
 		} else if strings.HasSuffix(endUrl, ".m3u8") {
-			client.Rdb.Set(client.Ctx, key, data, 2*time.Second)
+			client.Rdb.Set(client.Ctx, key, data, 4*time.Second)
 		} else {
 			c.AbortWithStatus(400)
 		}
