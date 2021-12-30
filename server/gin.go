@@ -17,7 +17,13 @@ func Initalize() {
 	router.SetTrustedProxies([]string{"127.0.0.1"})
 
 	router.POST("/hls/:channel/:endUrl", func(c *gin.Context) {
-		channel := c.Param("channel")
+		var channel string
+		variant := strings.Index(c.Param("channel"), "_")
+		if variant == -1 {
+			channel = c.Param("channel")
+		} else {
+			channel = c.Param("channel")[0:strings.Index(c.Param("channel"), "_")]
+		}
 		endUrl := c.Param("endUrl")
 
 		base64String, err := client.Rdb.Get(client.Ctx, channel).Result()
