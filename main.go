@@ -39,7 +39,7 @@ func saveStreams() {
 	for _, stream := range streams {
 		go func(stream api.Stream) {
 			base64String := b64.StdEncoding.EncodeToString([]byte(stream.Created_at + stream.User.Username))
-			err := client.Rdb.Set(client.Ctx, stream.User.Username, base64String+"_"+stream.User.Username, 10*time.Second).Err()
+			err := client.Rdb.Set(client.Ctx, stream.User.Username, base64String, 10*time.Second).Err()
 			if err != nil {
 				log.Println(err)
 			}

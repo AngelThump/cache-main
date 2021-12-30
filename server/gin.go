@@ -17,22 +17,23 @@ func Initalize() {
 	router.SetTrustedProxies([]string{"127.0.0.1"})
 
 	router.POST("/hls/:channel/:endUrl", func(c *gin.Context) {
-		var channel string
+		channel := c.Param("channel")
+		var base64Channel string
 		variant := strings.Index(c.Param("channel"), "_")
 		if variant == -1 {
-			channel = c.Param("channel")
+			base64Channel = c.Param("channel")
 		} else {
-			channel = c.Param("channel")[0:strings.Index(c.Param("channel"), "_")]
+			base64Channel = c.Param("channel")[0:strings.Index(c.Param("channel"), "_")]
 		}
 		endUrl := c.Param("endUrl")
 
-		base64String, err := client.Rdb.Get(client.Ctx, channel).Result()
+		base64String, err := client.Rdb.Get(client.Ctx, base64Channel).Result()
 		if err != nil {
 			c.AbortWithStatus(500)
 			return
 		}
 
-		key := base64String + "/" + endUrl
+		key := base64String + "_" + channel + "/" + endUrl
 		data, _ := c.GetRawData()
 		if strings.HasSuffix(endUrl, ".ts") {
 			client.Rdb.Set(client.Ctx, key, data, 20*time.Second)
