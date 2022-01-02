@@ -1,6 +1,7 @@
 package server
 
 import (
+	"regexp"
 	"strings"
 	"time"
 
@@ -18,13 +19,8 @@ func Initalize() {
 
 	router.POST("/hls/:channel/:endUrl", func(c *gin.Context) {
 		channel := c.Param("channel")
-		var base64Channel string
-		variant := strings.Index(c.Param("channel"), "_")
-		if variant == -1 {
-			base64Channel = c.Param("channel")
-		} else {
-			base64Channel = c.Param("channel")[0:strings.Index(c.Param("channel"), "_")]
-		}
+		regex := regexp.MustCompile(`_src|_medium|_low`)
+		base64Channel := regex.ReplaceAllString(c.Param("channel"), "")
 		endUrl := c.Param("endUrl")
 
 		base64String, err := client.Rdb.Get(client.Ctx, base64Channel).Result()
