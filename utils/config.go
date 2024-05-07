@@ -20,6 +20,10 @@ type ConfigStruct struct {
 		Hostname string `json:"hostname"`
 		AuthKey  string `json:"authKey"`
 	} `json:"streamsApi"`
+	IngestAPI struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
 }
 
 var Config *ConfigStruct

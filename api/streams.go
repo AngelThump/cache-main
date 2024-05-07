@@ -13,6 +13,11 @@ type Stream struct {
 	User       struct {
 		Username string `json:"username"`
 	} `json:"user"`
+	Ingest struct {
+		Server   string `json:"server"`
+		Id       string `json:"id"`
+		Mediamtx bool   `json:"mediamtx"`
+	} `json:"ingest"`
 }
 
 func Find() []Stream {

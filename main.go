@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
 	b64 "encoding/base64"
+	"encoding/json"
 
 	api "github.com/angelthump/cache-main/api"
 	client "github.com/angelthump/cache-main/client"
@@ -43,6 +45,18 @@ func saveStreams() {
 			if err != nil {
 				log.Println(err)
 			}
+
+			marshalledStream, err := json.Marshal(stream)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			err = client.Rdb.Set(client.Ctx, base64String+"_"+stream.User.Username, string(marshalledStream), 10*time.Second).Err()
+			if err != nil {
+				log.Println(err)
+			}
+
 		}(stream)
 	}
 
