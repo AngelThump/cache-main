@@ -40,7 +40,7 @@ func Initalize() {
 		} else if strings.HasSuffix(endUrl, ".m3u8") {
 			client.Rdb.Set(client.Ctx, key, data, 16*time.Second)
 		} else if strings.HasSuffix(endUrl, "init.mp4") {
-			client.Rdb.Set(client.Ctx, key, data, 16*time.Second)
+			client.Rdb.Set(client.Ctx, key, data, 30*time.Minute)
 		} else if strings.HasSuffix(endUrl, ".mp4") {
 			client.Rdb.Set(client.Ctx, key, data, 20*time.Second)
 		} else if strings.HasSuffix(endUrl, ".m4s") {
@@ -69,7 +69,7 @@ func Initalize() {
 		} else if strings.HasSuffix(endUrl, ".m3u8") {
 			client.Rdb.Set(client.Ctx, key, data, 16*time.Second)
 		} else if strings.HasSuffix(endUrl, "init.mp4") {
-			client.Rdb.Set(client.Ctx, key, data, 16*time.Second)
+			client.Rdb.Set(client.Ctx, key, data, 30*time.Minute)
 		} else if strings.HasSuffix(endUrl, ".mp4") {
 			client.Rdb.Set(client.Ctx, key, data, 20*time.Second)
 		} else if strings.HasSuffix(endUrl, ".m4s") {
@@ -142,7 +142,7 @@ func Initalize() {
 			client.Rdb.Set(client.Ctx, key, resp.Body(), 20*time.Second)
 			c.Data(200, "video/mp2t", []byte(resp.Body()))
 		} else if strings.HasSuffix(endUrl, "init.mp4") {
-			client.Rdb.Set(client.Ctx, key, data, 16*time.Second)
+			client.Rdb.Set(client.Ctx, key, data, 30*time.Minute)
 			c.Data(200, "video/mp4", []byte(resp.Body()))
 		} else if strings.HasSuffix(endUrl, ".mp4") {
 			client.Rdb.Set(client.Ctx, key, resp.Body(), 20*time.Second)
@@ -151,7 +151,7 @@ func Initalize() {
 			client.Rdb.Set(client.Ctx, key, resp.Body(), 20*time.Second)
 			c.Data(200, "video/mp4", []byte(resp.Body()))
 		} else if strings.HasSuffix(endUrl, ".m3u8") {
-			client.Rdb.Set(client.Ctx, key, resp.Body(), 16*time.Second)
+			client.Rdb.Set(client.Ctx, key, resp.Body(), 1*time.Second)
 			c.Data(200, "application/x-mpegURL", []byte(resp.Body()))
 		} else {
 			c.AbortWithStatus(400)
