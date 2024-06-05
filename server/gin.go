@@ -23,8 +23,10 @@ func Initalize() {
 
 	router.POST("/hls/:channel/:endUrl", func(c *gin.Context) {
 		channel := c.Param("channel")
+		pathRegex := regexp.MustCompile(`live/`)
+		baseChannel := pathRegex.ReplaceAllString(channel, "")
 		regex := regexp.MustCompile(`_src|_medium|_low`)
-		base64Channel := regex.ReplaceAllString(c.Param("channel"), "")
+		base64Channel := regex.ReplaceAllString(channel, "")
 		endUrl := c.Param("endUrl")
 
 		base64String, err := client.Rdb.Get(client.Ctx, base64Channel).Result()
@@ -33,12 +35,16 @@ func Initalize() {
 			return
 		}
 
-		key := base64String + "_" + channel + "/" + endUrl
+		key := base64String + "_" + baseChannel + "/" + endUrl
 		data, _ := c.GetRawData()
 		if strings.HasSuffix(endUrl, ".ts") {
 			client.Rdb.Set(client.Ctx, key, data, 20*time.Second)
 		} else if strings.HasSuffix(endUrl, ".m3u8") {
 			client.Rdb.Set(client.Ctx, key, data, 16*time.Second)
+		} else if strings.HasSuffix(endUrl, "init.mp4") {
+			client.Rdb.Set(client.Ctx, key, data, 16*time.Second)
+		} else if strings.HasSuffix(endUrl, ".mp4") {
+			client.Rdb.Set(client.Ctx, key, data, 20*time.Second)
 		} else {
 			c.AbortWithStatus(400)
 		}
