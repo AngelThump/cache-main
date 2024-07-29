@@ -128,7 +128,7 @@ func Initalize() {
 		}
 
 		fullEndUrl := strings.Replace(c.Param("endUrl"), "index", "stream", 1) + "?" + c.Request.URL.Query().Encode()
-		mediamtxEndUrl := "https://" + utils.Config.IngestAPI.Username + ":" + utils.Config.IngestAPI.Password + "@" + streamData.Ingest.Server + ".angelthump.com/hls/live/" + streamData.User.Username + "/" + fullEndUrl
+		mediamtxEndUrl := "https://" + utils.Config.IngestAPI.Username + ":" + utils.Config.IngestAPI.Password + "@" + streamData.Ingest.Server + ".angelthump.com/hls/live/" + streamData.User.StreamKey + "/" + fullEndUrl
 
 		restyClient := resty.New()
 		resp, _ := restyClient.R().
@@ -147,6 +147,7 @@ func Initalize() {
 			client.Rdb.Set(client.Ctx, key, resp.Body(), 20*time.Second)
 			c.Data(200, "video/mp2t", []byte(resp.Body()))
 		} else if strings.HasSuffix(endUrl, "init.mp4") {
+			client.Rdb.Set(client.Ctx, key, resp.Body(), 24*time.Hour)
 			c.Data(200, "video/mp4", []byte(resp.Body()))
 		} else if strings.HasSuffix(endUrl, ".mp4") {
 			client.Rdb.Set(client.Ctx, key, resp.Body(), 20*time.Second)
@@ -155,6 +156,7 @@ func Initalize() {
 			client.Rdb.Set(client.Ctx, key, resp.Body(), 20*time.Second)
 			c.Data(200, "video/mp4", []byte(resp.Body()))
 		} else if strings.HasSuffix(endUrl, ".m3u8") {
+			client.Rdb.Set(client.Ctx, key, resp.Body(), 1*time.Second)
 			c.Data(200, "application/x-mpegURL", []byte(resp.Body()))
 		} else {
 			c.AbortWithStatus(400)

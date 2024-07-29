@@ -11,7 +11,8 @@ import (
 type Stream struct {
 	Created_at string `json:"createdAt"`
 	User       struct {
-		Username string `json:"username"`
+		Username  string `json:"username"`
+		StreamKey string `json:"stream_key"`
 	} `json:"user"`
 	Ingest struct {
 		Server   string `json:"server"`
