@@ -1,6 +1,6 @@
 module github.com/angelthump/cache-main
 
-go 1.17
+go 1.22.5
 
 require (
 	github.com/gin-gonic/gin v1.7.7

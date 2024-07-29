@@ -127,7 +127,11 @@ func Initalize() {
 			return
 		}
 
-		fullEndUrl := strings.Replace(c.Param("endUrl"), "index", "stream", 1) + "?" + c.Request.URL.Query().Encode()
+		fullEndUrl := strings.Replace(c.Param("endUrl"), "index", "stream", 1)
+		query := c.Request.URL.Query().Encode()
+		if len(query) > 0 {
+			fullEndUrl += "?" + query
+		}
 		mediamtxEndUrl := "https://" + utils.Config.IngestAPI.Username + ":" + utils.Config.IngestAPI.Password + "@" + streamData.Ingest.Server + ".angelthump.com/hls/live/" + streamData.User.StreamKey + "/" + fullEndUrl
 
 		restyClient := resty.New()
