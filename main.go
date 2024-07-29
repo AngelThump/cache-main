@@ -46,6 +46,13 @@ func saveStreams() {
 				log.Println(err)
 			}
 
+			user := api.GetUser(stream.User.Id)
+			if user == nil {
+				log.Println(err)
+				return
+			}
+			stream.User = *user
+
 			marshalledStream, err := json.Marshal(stream)
 			if err != nil {
 				fmt.Println(err)
