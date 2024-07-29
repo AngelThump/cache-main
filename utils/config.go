@@ -23,6 +23,7 @@ type ConfigStruct struct {
 	IngestAPI struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
+		AuthKey  string `json:"authKey"`
 	}
 }
 
