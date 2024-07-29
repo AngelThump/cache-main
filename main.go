@@ -40,18 +40,24 @@ func saveStreams() {
 
 	for _, stream := range streams {
 		go func(stream api.Stream) {
+			user := api.GetUser(stream.User.Id)
+			if user == nil {
+				return
+			}
+			stream.User = *user
+
 			base64String := b64.StdEncoding.EncodeToString([]byte(stream.Created_at + stream.User.Username))
-			err := client.Rdb.Set(client.Ctx, stream.User.Username, base64String, 10*time.Second).Err()
+
+			err := client.Rdb.Set(client.Ctx, stream.User.Username, base64String+"_"+stream.User.Username, 10*time.Second).Err()
 			if err != nil {
 				log.Println(err)
 			}
 
-			user := api.GetUser(stream.User.Id)
-			if user == nil {
+			//set it for stream_key as well for mediamtx warmer
+			err = client.Rdb.Set(client.Ctx, stream.User.StreamKey, base64String+"_"+stream.User.Username, 10*time.Second).Err()
+			if err != nil {
 				log.Println(err)
-				return
 			}
-			stream.User = *user
 
 			marshalledStream, err := json.Marshal(stream)
 			if err != nil {
