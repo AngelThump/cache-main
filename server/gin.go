@@ -88,6 +88,7 @@ func Initalize() {
 
 		//c.AbortWithStatus(404)
 
+		//Only allow video files.
 		endPathRegex := regexp.MustCompile(`.ts|.mp4|.m4s`)
 		if !endPathRegex.MatchString(endUrl) {
 			c.AbortWithStatus(500)
@@ -98,7 +99,7 @@ func Initalize() {
 
 		data, err = client.Rdb.Get(client.Ctx, base64Channel).Result()
 		if err != nil {
-			c.AbortWithStatus(500)
+			c.AbortWithStatus(404)
 			return
 		}
 
