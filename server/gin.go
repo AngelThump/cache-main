@@ -91,7 +91,7 @@ func Initalize() {
 		//Only allow video files.
 		endPathRegex := regexp.MustCompile(`.ts|.mp4|.m4s`)
 		if !endPathRegex.MatchString(endUrl) {
-			c.AbortWithStatus(500)
+			c.AbortWithStatus(400)
 		}
 
 		regex := regexp.MustCompile(`_src|_medium|_low`)
