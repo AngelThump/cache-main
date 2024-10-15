@@ -22,7 +22,7 @@ func Initalize() {
 	router := gin.Default()
 	router.SetTrustedProxies([]string{"127.0.0.1"})
 
-	router.POST("/hls/:channel/:endUrl", func(c *gin.Context) {
+	router.POST("/transcode/:channel/:endUrl", func(c *gin.Context) {
 		jwtToken, err := extractBearerToken(c.GetHeader("Authorization"))
 		if err != nil {
 			c.AbortWithStatus(500)
@@ -46,6 +46,46 @@ func Initalize() {
 		}
 
 		key := base64Path + "_" + channel + "/" + endUrl
+		data, _ := c.GetRawData()
+		if strings.HasSuffix(endUrl, ".ts") {
+			client.Rdb.Set(client.Ctx, key, data, 30*time.Second)
+		} else if strings.HasSuffix(endUrl, ".m3u8") {
+			client.Rdb.Set(client.Ctx, key, data, 30*time.Second)
+		} else if strings.HasSuffix(endUrl, "init.mp4") {
+			client.Rdb.Set(client.Ctx, key, data, 30*time.Second)
+		} else if strings.HasSuffix(endUrl, ".mp4") {
+			client.Rdb.Set(client.Ctx, key, data, 30*time.Second)
+		} else if strings.HasSuffix(endUrl, ".m4s") {
+			client.Rdb.Set(client.Ctx, key, data, 30*time.Second)
+		} else {
+			c.AbortWithStatus(400)
+		}
+	})
+
+	router.POST("/hls/:channel/:endUrl", func(c *gin.Context) {
+		jwtToken, err := extractBearerToken(c.GetHeader("Authorization"))
+		if err != nil {
+			c.AbortWithStatus(500)
+			return
+		}
+
+		if jwtToken != utils.Config.IngestAPI.AuthKey {
+			c.AbortWithStatus(500)
+			return
+		}
+
+		channel := c.Param("channel")
+		regex := regexp.MustCompile(`_src|_medium|_low`)
+		base64Channel := regex.ReplaceAllString(channel, "")
+		endUrl := c.Param("endUrl")
+
+		base64Path, err := client.Rdb.Get(client.Ctx, base64Channel).Result()
+		if err != nil {
+			c.AbortWithStatus(500)
+			return
+		}
+
+		key := base64Path + "/" + endUrl
 		data, _ := c.GetRawData()
 		if strings.HasSuffix(endUrl, ".ts") {
 			client.Rdb.Set(client.Ctx, key, data, 30*time.Second)

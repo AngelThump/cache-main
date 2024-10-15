@@ -54,7 +54,7 @@ func saveStreams() {
 			}
 
 			//set it for stream_key as well for mediamtx warmer
-			err = client.Rdb.Set(client.Ctx, stream.User.StreamKey, base64String, 10*time.Second).Err()
+			err = client.Rdb.Set(client.Ctx, stream.User.StreamKey, base64String+"_"+stream.User.Username, 10*time.Second).Err()
 			if err != nil {
 				log.Println(err)
 			}
