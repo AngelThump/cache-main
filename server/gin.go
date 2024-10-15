@@ -45,7 +45,7 @@ func Initalize() {
 			return
 		}
 
-		key := base64Path + "/" + endUrl
+		key := base64Path + "_" + channel + "/" + endUrl
 		data, _ := c.GetRawData()
 		if strings.HasSuffix(endUrl, ".ts") {
 			client.Rdb.Set(client.Ctx, key, data, 30*time.Second)
